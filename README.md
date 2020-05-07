@@ -4,7 +4,7 @@
 md-img-oss -mddir /home/mds -endpoint oss-cn-shenzhen.aliyuncs.com -accesskeyId xxxxxxx  -accessKeySecret xxxxxxx -bucketName xxxxxx
 ```
 
-安装
+获取
 ```bash
 go get github.com/lixiaofei123/md-img-oss
 ```
@@ -29,4 +29,3 @@ go get github.com/lixiaofei123/md-img-oss
 -ossDir string
     将数据上传到oss的此目录下
 
-    sss
