@@ -11,6 +11,7 @@ go get github.com/lixiaofei123/md-img-oss
 
 参数详细解释
 
+```
 -accessKeySecret string
     aliyun账号的accessKeySecret
 -accesskeyId string
@@ -28,4 +29,5 @@ go get github.com/lixiaofei123/md-img-oss
     markdown文件所在的目录
 -ossDir string
     将数据上传到oss的此目录下
+```
 
