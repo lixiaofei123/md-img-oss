@@ -1,4 +1,4 @@
-module github.com/lixiaofei326/md-img-oss
+module github.com/lixiaofei123/md-img-oss
 
 go 1.14
 
