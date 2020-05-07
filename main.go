@@ -73,8 +73,7 @@ md-img-oss -mddir /home/mds -endpoint oss-cn-shenzhen.aliyuncs.com -accesskeyId 
 	flag.Visit(func(f *flag.Flag) { seen[f.Name] = true })
 	for _, req := range required {
 		if !seen[req] {
-			fmt.Fprintf(os.Stderr, "缺少%s参数", req)
-			os.Exit(-1)
+			log.Fatalf("缺少%s参数 \n", req)
 		}
 	}
 
