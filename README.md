@@ -6,7 +6,7 @@ md-img-oss -mddir /home/mds -endpoint oss-cn-shenzhen.aliyuncs.com -accesskeyId 
 
 安装
 ```bash
-go install github.com/lixiaofei123/md-img-oss
+go get github.com/lixiaofei123/md-img-oss
 ```
 
 参数详细解释
