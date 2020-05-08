@@ -103,46 +103,53 @@ md-img-oss -mddir /home/mds -endpoint oss-cn-shenzhen.aliyuncs.com -accesskeyId 
 	re := regexp.MustCompile("\\!\\[(.*?)\\]\\((.*?)\\)")
 	fileinfos, err := ioutil.ReadDir(mddir)
 	if err == nil {
-		for _, fileinfo := range fileinfos {
-			if !fileinfo.IsDir() && strings.HasSuffix(fileinfo.Name(), ".md") {
-				fmt.Println("扫描md文件:", fileinfo.Name())
-				mdPath := mddir + "/" + fileinfo.Name()
-				bytes, err := ioutil.ReadFile(mdPath)
-				if err == nil {
-					isReplace := false
-					mdContent := string(bytes)
-					matches := re.FindAllStringSubmatch(mdContent, -1)
-					for _, match := range matches {
-						title := match[1]
-						sourcepath := match[2]
-						if !strings.HasPrefix(sourcepath, "http") {
-							path := sourcepath
-							if !filepath.IsAbs(path) {
-								path = mddir + "/" + path
-							}
-							fmt.Println("发现本地图片路径:", path)
-							fmt.Println("将其上传至OSS")
+		if len(fileinfos) != 0 {
+			for _, fileinfo := range fileinfos {
+				if !fileinfo.IsDir() && strings.HasSuffix(fileinfo.Name(), ".md") {
+					fmt.Println("扫描md文件:", fileinfo.Name())
+					mdPath := mddir + "/" + fileinfo.Name()
+					bytes, err := ioutil.ReadFile(mdPath)
+					if err == nil {
+						isReplace := false
+						mdContent := string(bytes)
+						matches := re.FindAllStringSubmatch(mdContent, -1)
+						for _, match := range matches {
+							title := match[1]
+							sourcepath := match[2]
+							if !strings.HasPrefix(sourcepath, "http") {
+								path := sourcepath
+								if !filepath.IsAbs(path) {
+									path = mddir + "/" + path
+								}
+								fmt.Println("发现本地图片路径:", path)
+								fmt.Println("将其上传至OSS")
 
-							newpath, err := uploadFileToAliOSS(bucket, path, domain, ossDir, dirLevel)
-							if err == nil {
-								fmt.Println("上传成功，新的路径为", newpath)
-								newre := regexp.MustCompile("\\!\\[" + title + "\\]\\(" + sourcepath + "\\)")
-								mdContent = newre.ReplaceAllString(mdContent, fmt.Sprintf("![%v](%v)", title, newpath))
-								isReplace = true
-							} else {
-								log.Fatalf("上传资源至OSS失败,原因: %v \n", err)
+								newpath, err := uploadFileToAliOSS(bucket, path, domain, ossDir, dirLevel)
+								if err == nil {
+									fmt.Println("上传成功，新的路径为", newpath)
+									newre := regexp.MustCompile("\\!\\[" + title + "\\]\\(" + sourcepath + "\\)")
+									mdContent = newre.ReplaceAllString(mdContent, fmt.Sprintf("![%v](%v)", title, newpath))
+									isReplace = true
+								} else {
+									log.Fatalf("上传资源至OSS失败,原因: %v \n", err)
+								}
 							}
 						}
-					}
 
-					if isReplace {
-						ioutil.WriteFile(mdPath, []byte(mdContent), 0755)
-						fmt.Println("替换成功")
-					} else {
-						fmt.Println("无需替换任何图片")
+						if isReplace {
+							ioutil.WriteFile(mdPath, []byte(mdContent), 0755)
+							fmt.Println("替换成功")
+						} else {
+							fmt.Println("无需替换任何图片")
+						}
 					}
 				}
 			}
+		} else {
+			fmt.Println("未发现任何md文件")
 		}
+
+	} else {
+		log.Fatalf("读取文件夹失败,原因: %v \n", err)
 	}
 }
